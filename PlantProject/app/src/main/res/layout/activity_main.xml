@@ -414,14 +414,14 @@
                 </Button>
                 <Button
                     android:id="@+id/hand_wind_btn"
-                    android:layout_width="350px"
+                    android:layout_width="400px"
                     android:layout_height="150px"
                     android:background="@drawable/btn_hand"
-                    android:text="공기 순환"
+                    android:text="공기 순환 실행"
                     android:textSize="60px"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_margin="15dp"
+                    android:layout_margin="7dp"
 
                     >
 

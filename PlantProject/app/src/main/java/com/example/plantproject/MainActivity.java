@@ -15,6 +15,15 @@ import android.widget.ToggleButton;
 
 public class MainActivity extends AppCompatActivity {
     boolean light_on = false; // 조명이 켜져있는지 꺼져있는지 알기 위한 변수. false는 꺼져있는 상태
+    boolean wind_on = false; // 공기순환 모터가 꺼져있는지 알기 위한 변수.
+    private BackKeyHandler backKeyHandler = new BackKeyHandler(this); // 뒤로가기 이벤트 핸들러 변수
+
+    //뒤로가기 두번 누르면 종료
+    @Override
+    public void onBackPressed() {
+        backKeyHandler.onBackPressed("\'뒤로\' 버튼을 두 번 누르면 종료됩니다.");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +137,23 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getApplicationContext(),"공기순환을 실행하였습니다.", Toast.LENGTH_SHORT).show();
+                        //만약 불이 꺼져있는 상태라면
+                        if(wind_on==false){
+                            Toast.makeText(getApplicationContext(),"공기순환을 실행합니다.", Toast.LENGTH_SHORT).show();
+                            wind_on=true;
+                            handWindBtn.setText("공기 순환 종료");
+                            handWindBtn.setTextColor(Color.WHITE);
+                            handWindBtn.setBackground(getResources().getDrawable(R.drawable.hand_wind_on));
+                        }
+                        //만약 불이 켜져있는 상태라면
+                        else {
+                            Toast.makeText(getApplicationContext(),"공기순환을 종료합니다.", Toast.LENGTH_SHORT).show();
+                            wind_on=false;
+                            handWindBtn.setText("공기 순환 실행");
+                            handWindBtn.setTextColor(Color.BLACK);
+                            handWindBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
+                        }
+
                     }
                 }
         );
