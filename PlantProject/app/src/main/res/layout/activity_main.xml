@@ -51,10 +51,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="316dp"
-            android:text="가나다라마바사아자차카"
+            android:text="사아자차카"
 
             android:textColor="@color/white"
-            android:textSize="80px"
+            android:textSize="25dp"
             android:textStyle="bold"
 
             app:layout_constraintHorizontal_bias="0.514"
@@ -123,7 +123,7 @@
                     android:text="40%"
                     android:layout_marginRight="7dp"
                     android:textStyle="bold"
-                    android:textSize="80px"
+                    android:textSize="27dp"
                     >
 
                 </TextView>
@@ -149,7 +149,7 @@
                     android:text="45%"
                     android:layout_marginRight="7dp"
                     android:textStyle="bold"
-                    android:textSize="80px"
+                    android:textSize="27dp"
                     >
 
                 </TextView>
@@ -173,7 +173,7 @@
                     android:text="29º"
                     android:layout_marginRight="7dp"
                     android:textStyle="bold"
-                    android:textSize="80px"
+                    android:textSize="27dp"
                     >
 
                 </TextView>
@@ -192,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:text="토양 습도"
                     android:textColor="@color/grey_500"
-                    android:textSize="60px"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     android:layout_marginLeft="55dp"
                     >
@@ -203,7 +203,7 @@
                     android:layout_height="wrap_content"
                     android:text="습도"
                     android:textColor="@color/grey_500"
-                    android:textSize="60px"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     android:layout_marginLeft="80dp"
                     >
@@ -214,7 +214,7 @@
                     android:layout_height="wrap_content"
                     android:text="온도"
                     android:textColor="@color/grey_500"
-                    android:textSize="60px"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     android:layout_marginLeft="100dp"
                     >
@@ -229,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/state_text"
                 android:text="자동 ON/OFF"
-                android:textSize="120px"
+                android:textSize="40dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:paddingLeft="25dp"
@@ -271,7 +271,7 @@
                     android:textStyle="bold"
                     android:text="물 OFF"
                     android:textColor="@color/black"
-                    android:textSize="60px"
+                    android:textSize="20dp"
                     android:layout_marginTop="20px"
 
                     >
@@ -314,7 +314,7 @@
                     android:textStyle="bold"
                     android:text="조명 OFF"
                     android:textColor="@color/black"
-                    android:textSize="60px"
+                    android:textSize="17dp"
                     android:layout_marginTop="20px"
 
                     >
@@ -354,7 +354,7 @@
                     android:textStyle="bold"
                     android:text="바람 OFF"
                     android:textColor="@color/black"
-                    android:textSize="60px"
+                    android:textSize="20dp"
                     android:layout_marginTop="20px"
 
                     >
@@ -369,7 +369,7 @@
                 android:layout_below="@+id/water_auto_layout"
                 android:id="@+id/hand_text"
                 android:text="수동 조작"
-                android:textSize="120px"
+                android:textSize="40dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:paddingTop="25dp"
@@ -387,38 +387,38 @@
                 >
                 <Button
                     android:id="@+id/hand_water_btn"
-                    android:layout_width="350px"
-                    android:layout_height="150px"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/btn_hand"
-                    android:text="물주기"
-                    android:textSize="60px"
+                    android:text="물 주기"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_margin="15dp"
+                    android:layout_margin="10dp"
                     >
 
                 </Button>
                 <Button
                     android:id="@+id/hand_light_btn"
-                    android:layout_width="350px"
-                    android:layout_height="150px"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/btn_hand"
                     android:text="조명 켜기"
-                    android:textSize="60px"
+                    android:textSize="17dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_margin="15dp"
+                    android:layout_margin="10dp"
 
                     >
 
                 </Button>
                 <Button
                     android:id="@+id/hand_wind_btn"
-                    android:layout_width="400px"
-                    android:layout_height="150px"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/btn_hand"
                     android:text="공기 순환 실행"
-                    android:textSize="60px"
+                    android:textSize="15dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     android:layout_margin="7dp"
