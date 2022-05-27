@@ -91,6 +91,27 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        databaseReference.child("switch").child("nonauto").child("water").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String db_water = snapshot.getValue(String.class);
+                if(db_water.equals("ON")){
+                    waterToggle.setEnabled(false);
+                    handWaterBtn.setText("물 끄기");
+                    handWaterBtn.setTextColor(Color.WHITE);
+                    handWaterBtn.setBackground(getResources().getDrawable(R.drawable.hand_on));
+                } else {
+                    waterToggle.setEnabled(true);
+                    handWaterBtn.setText("물 주기");
+                    handWaterBtn.setTextColor(Color.BLACK);
+                    handWaterBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         databaseReference.child("switch").child("auto").child("LED").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -103,11 +124,33 @@ public class MainActivity extends AppCompatActivity {
                     lightText.setText("조명 OFF");
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        databaseReference.child("switch").child("auto").child("wind").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("switch").child("nonauto").child("LED").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String db_light = snapshot.getValue(String.class);
+                if(db_light.equals("ON")){
+                    lightToggle.setEnabled(false);
+                    handLightBtn.setText("조명 끄기");
+                    handLightBtn.setTextColor(Color.WHITE);
+                    handLightBtn.setBackground(getResources().getDrawable(R.drawable.hand_on));
+                } else {
+                    lightToggle.setEnabled(true);
+                    handLightBtn.setText("조명 켜기");
+                    handLightBtn.setTextColor(Color.BLACK);
+                    handLightBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        databaseReference.child("switch").child("auto").child("cooler").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String db_wind_auto = snapshot.getValue(String.class);
@@ -123,13 +166,56 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        databaseReference.child("switch").child("nonauto").child("cooler").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String db_wind = snapshot.getValue(String.class);
+                if(db_wind.equals("ON")){
+                    windToggle.setEnabled(false);
+                    handWindBtn.setText("공기 순환 종료");
+                    handWindBtn.setTextColor(Color.WHITE);
+                    handWindBtn.setBackground(getResources().getDrawable(R.drawable.hand_on));
+                } else {
+                    windToggle.setEnabled(true);
+                    handWindBtn.setText("공기 순환 실행");
+                    handWindBtn.setTextColor(Color.BLACK);
+                    handWindBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        //토양습도 데이터를 데이터베이스로부터 가져오기
+        databaseReference.child("sensors").child("soil_hum").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int soil_hum = (int)snapshot.getValue(Integer.class);
+                sh_data_tv.setText(String.valueOf(soil_hum)+"%");
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         //습도 데이터를 데이터베이스로부터 가져오기
-        databaseReference.child("sensors").child("hum").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("sensors").child("Hum").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int hum = (int)snapshot.getValue(Integer.class);
                 h_data_tv.setText(String.valueOf(hum)+"%");
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        //온도 데이터를 데이터베이스로부터 가져오기
+        databaseReference.child("sensors").child("Temp").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int temp = (int)snapshot.getValue(Integer.class);
+                t_data_tv.setText(String.valueOf(temp)+"º");
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -197,13 +283,13 @@ public class MainActivity extends AppCompatActivity {
                         String windAutoText;
                         if(ischecked && auto_wind_on == false){
                             windAutoText = "바람 ON";
-                            databaseReference.child("switch").child("auto").child("wind").setValue("ON");
+                            databaseReference.child("switch").child("auto").child("cooler").setValue("ON");
                             windText.setText(windAutoText);
                             auto_wind_on = true;
                         }
                         else {
                             windAutoText = "바람 OFF";
-                            databaseReference.child("switch").child("auto").child("wind").setValue("OFF");
+                            databaseReference.child("switch").child("auto").child("cooler").setValue("OFF");
                             windText.setText(windAutoText);
                             auto_wind_on = false;
                         }
@@ -225,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"물주기를 실행합니다.", Toast.LENGTH_SHORT).show();
                                 water_on=true;
                                 waterToggle.setEnabled(false);
-                                databaseReference.child("switch").child("noauto").child("water").setValue("ON");
+                                databaseReference.child("switch").child("nonauto").child("water").setValue("ON");
                                 handWaterBtn.setText("물 끄기");
                                 handWaterBtn.setTextColor(Color.WHITE);
                                 handWaterBtn.setBackground(getResources().getDrawable(R.drawable.hand_on));
@@ -236,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),"물을 껐습니다.", Toast.LENGTH_SHORT).show();
                             water_on=false;
                             waterToggle.setEnabled(true);
-                            databaseReference.child("switch").child("noauto").child("water").setValue("OFF");
+                            databaseReference.child("switch").child("nonauto").child("water").setValue("OFF");
                             handWaterBtn.setText("물 주기");
                             handWaterBtn.setTextColor(Color.BLACK);
                             handWaterBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
@@ -257,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"조명을 켰습니다.", Toast.LENGTH_SHORT).show();
                                 light_on=true;
                                 lightToggle.setEnabled(false);
-                                databaseReference.child("switch").child("noauto").child("LED").setValue("ON");
+                                databaseReference.child("switch").child("nonauto").child("LED").setValue("ON");
                                 handLightBtn.setText("조명 끄기");
                                 handLightBtn.setTextColor(Color.WHITE);
                                 handLightBtn.setBackground(getResources().getDrawable(R.drawable.hand_on));
@@ -268,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),"조명을 껐습니다.", Toast.LENGTH_SHORT).show();
                             light_on=false;
                             lightToggle.setEnabled(true);
-                            databaseReference.child("switch").child("noauto").child("LED").setValue("OFF");
+                            databaseReference.child("switch").child("nonauto").child("LED").setValue("OFF");
                             handLightBtn.setText("조명 켜기");
                             handLightBtn.setTextColor(Color.BLACK);
                             handLightBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
@@ -281,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
-                        //만약 불이 꺼져있는 상태라면
+                        //만약 공기순환이 꺼져있는 상태라면
                         if(wind_on==false){
                             if(auto_wind_on == true){
                                 Toast.makeText(getApplicationContext(),"자동 공기순환기능을 해제하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
@@ -289,18 +375,18 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"공기순환을 실행합니다.", Toast.LENGTH_SHORT).show();
                                 wind_on=true;
                                 windToggle.setEnabled(false);
-                                databaseReference.child("switch").child("noauto").child("wind").setValue("ON");
+                                databaseReference.child("switch").child("nonauto").child("cooler").setValue("ON");
                                 handWindBtn.setText("공기 순환 종료");
                                 handWindBtn.setTextColor(Color.WHITE);
                                 handWindBtn.setBackground(getResources().getDrawable(R.drawable.hand_on));
                             }
                         }
-                        //만약 불이 켜져있는 상태라면
+                        //만약 공기순환이 켜져있는 상태라면
                         else {
                             Toast.makeText(getApplicationContext(),"공기순환을 종료합니다.", Toast.LENGTH_SHORT).show();
                             wind_on=false;
                             windToggle.setEnabled(true);
-                            databaseReference.child("switch").child("noauto").child("wind").setValue("OFF");
+                            databaseReference.child("switch").child("nonauto").child("LED").setValue("OFF");
                             handWindBtn.setText("공기 순환 실행");
                             handWindBtn.setTextColor(Color.BLACK);
                             handWindBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
