@@ -1,11 +1,14 @@
 package com.example.plantproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -23,6 +26,10 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    int soil_hum=1;
+    int hum=1;
+    int temp=1;
     //자동 on/off 버튼 boolean 변수
     boolean auto_water_on = false; // false면 꺼져있는 상태
     boolean auto_light_on = false;
@@ -33,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     boolean light_on = false; // 조명이 켜져있는지 꺼져있는지 알기 위한 변수. false는 꺼져있는 상태
     boolean wind_on = false; // 공기순환 모터가 꺼져있는지 알기 위한 변수.
 
-    private BackKeyHandler backKeyHandler = new BackKeyHandler(this); // 뒤로가기 이벤트 핸들러 변수
+    private final BackKeyHandler backKeyHandler = new BackKeyHandler(this); // 뒤로가기 이벤트 핸들러 변수
 
     //데이터베이스
     private FirebaseDatabase database;
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     //뒤로가기 두번 누르면 종료
     @Override
     public void onBackPressed() {
-        backKeyHandler.onBackPressed("\'뒤로\' 버튼을 두 번 누르면 종료됩니다.");
+        backKeyHandler.onBackPressed("'뒤로' 버튼을 두 번 누르면 종료됩니다.");
     }
 
     @Override
@@ -73,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference("plantproject");
 
-        //앱이 실행하면서 한번만 처리. 데이터베이스의 값에 맞게 앱 상태 초기화화
+        //앱이 실행하면서 한번만 처리. 데이터베이스의 값에 맞게 앱 상태 초기화
        databaseReference.child("switch").child("auto").child("water").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -86,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                     waterText.setText("물 OFF");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -187,24 +193,47 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
-        //토양습도 데이터를 데이터베이스로부터 가져오기
-        databaseReference.child("sensors").child("soil_hum").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("sensors").child("soil_hum").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int soil_hum = (int)snapshot.getValue(Integer.class);
-                sh_data_tv.setText(String.valueOf(soil_hum)+"%");
+                soil_hum =(int)snapshot.getValue(Integer.class);
+                setSpeechBubble(plant_text);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        databaseReference.child("sensors").child("Temp").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                temp =(int)snapshot.getValue(Integer.class);
+                setSpeechBubble(plant_text);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        //토양습도 데이터를 데이터베이스로부터 가져오기
+        databaseReference.child("sensors").child("soil_hum").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                soil_hum = (int)snapshot.getValue(Integer.class);
+                sh_data_tv.setText(soil_hum +"%");
+                setSpeechBubble(plant_text);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
         //습도 데이터를 데이터베이스로부터 가져오기
         databaseReference.child("sensors").child("Hum").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int hum = (int)snapshot.getValue(Integer.class);
-                h_data_tv.setText(String.valueOf(hum)+"%");
+                hum = (int)snapshot.getValue(Integer.class);
+                h_data_tv.setText(hum +"%");
+                setSpeechBubble(plant_text);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -214,22 +243,10 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child("sensors").child("Temp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int temp = (int)snapshot.getValue(Integer.class);
-                t_data_tv.setText(String.valueOf(temp)+"º");
+                temp = (int)snapshot.getValue(Integer.class);
+                t_data_tv.setText(temp +"º");
+                setSpeechBubble(plant_text);
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        //LED ON/OFF 데이터를 데이터베이스로부터 가져오기( 임시로 말풍선 안에 표시 )
-        databaseReference.child("sensors").child("LED").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String led = snapshot.getValue(String.class);
-                plant_text.setText(String.valueOf(led));
-            }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -308,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"자동 물주기를 해제하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                             }
                             else{
-                                Toast.makeText(getApplicationContext(),"물주기를 실행합니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"물주기를 실행합니다.", Toast.LENGTH_LONG).show();
                                 water_on=true;
                                 waterToggle.setEnabled(false);
                                 databaseReference.child("switch").child("nonauto").child("water").setValue("ON");
@@ -319,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         //만약 물이 나오고 있으면
                         else {
-                            Toast.makeText(getApplicationContext(),"물을 껐습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"물주기를 종료합니다.", Toast.LENGTH_LONG).show();
                             water_on=false;
                             waterToggle.setEnabled(true);
                             databaseReference.child("switch").child("nonauto").child("water").setValue("OFF");
@@ -340,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"자동 조명기능을 해제하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                             }
                             else{
-                                Toast.makeText(getApplicationContext(),"조명을 켰습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"조명을 켰습니다.", Toast.LENGTH_LONG).show();
                                 light_on=true;
                                 lightToggle.setEnabled(false);
                                 databaseReference.child("switch").child("nonauto").child("LED").setValue("ON");
@@ -351,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         //만약 불이 켜져있는 상태라면
                         else {
-                            Toast.makeText(getApplicationContext(),"조명을 껐습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"조명을 껐습니다.", Toast.LENGTH_LONG).show();
                             light_on=false;
                             lightToggle.setEnabled(true);
                             databaseReference.child("switch").child("nonauto").child("LED").setValue("OFF");
@@ -372,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                             if(auto_wind_on == true){
                                 Toast.makeText(getApplicationContext(),"자동 공기순환기능을 해제하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                             } else{
-                                Toast.makeText(getApplicationContext(),"공기순환을 실행합니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"공기순환을 실행합니다.", Toast.LENGTH_LONG).show();
                                 wind_on=true;
                                 windToggle.setEnabled(false);
                                 databaseReference.child("switch").child("nonauto").child("cooler").setValue("ON");
@@ -383,10 +400,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         //만약 공기순환이 켜져있는 상태라면
                         else {
-                            Toast.makeText(getApplicationContext(),"공기순환을 종료합니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"공기순환을 종료합니다.", Toast.LENGTH_LONG).show();
                             wind_on=false;
                             windToggle.setEnabled(true);
-                            databaseReference.child("switch").child("nonauto").child("LED").setValue("OFF");
+                            databaseReference.child("switch").child("nonauto").child("cooler").setValue("OFF");
                             handWindBtn.setText("공기 순환 실행");
                             handWindBtn.setTextColor(Color.BLACK);
                             handWindBtn.setBackground(getResources().getDrawable(R.drawable.btn_hand));
@@ -397,4 +414,33 @@ public class MainActivity extends AppCompatActivity {
         );
 
     }
+    //센서값에 따라 말풍선 말 바꾸는 함수
+    public void setSpeechBubble(TextView x){
+        if(soil_hum>=40 && soil_hum<60){
+            if(temp>=20 && temp <25){
+                x.setText("지금은 기분이 좋아요!");
+            } else if(temp <20){
+                x.setText("추워요..");
+            } else if(temp >=25){
+                x.setText("더워요..");
+            }
+        } else if(soil_hum<40){
+            if(temp>=20 && temp <25){
+                x.setText("목이 말라요!");
+            } else if(temp <20){
+                x.setText("목이 마르고 추워요..");
+            } else if(temp >=25){
+                x.setText("목이 마르고 더워요..");
+            }
+        } else if(soil_hum>=60){
+            if(temp>=20 && temp <25){
+                x.setText("축축해요!");
+            } else if(temp <20){
+                x.setText("축축하고 추워요..");
+            } else if(temp >=25){
+                x.setText("축축하고 더워요..");
+            }
+        }
+    }
+
 }
